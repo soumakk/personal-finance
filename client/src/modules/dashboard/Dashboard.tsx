@@ -1,7 +1,7 @@
-import DashboardLayout from '../layout/DashboardLayout'
-import moneyIcon from '../../assets/money.svg'
 import expenseIcon from '../../assets/expense.svg'
 import incomeIcon from '../../assets/income.svg'
+import moneyIcon from '../../assets/money.svg'
+import DashboardLayout from '../layout/DashboardLayout'
 
 export default function Dashboard() {
 	return (

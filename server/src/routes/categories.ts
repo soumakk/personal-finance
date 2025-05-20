@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { PrismaClient } from '@prisma/client'
 import { categorySchema, categoryUpdateSchema } from '../schemas/category'
+import { HTTPException } from 'hono/http-exception'
 
 const prisma = new PrismaClient()
 const app = new Hono()
@@ -19,8 +20,7 @@ app.post('/', zValidator('json', categorySchema), async (c) => {
 		const category = await prisma.category.create({ data })
 		return c.json(category, 201)
 	} catch (err) {
-		console.error(err)
-		return c.json({ error: 'Failed to create category.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
@@ -35,8 +35,7 @@ app.get('/', async (c) => {
 		})
 		return c.json(all)
 	} catch (err) {
-		console.error(err)
-		return c.json({ error: 'Failed to fetch categories.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
@@ -48,8 +47,7 @@ app.get('/:id', async (c) => {
 		if (!category) return c.json({ error: 'Category not found.' }, 404)
 		return c.json(category)
 	} catch (err) {
-		console.error(err)
-		return c.json({ error: 'Failed to fetch category.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
@@ -62,10 +60,9 @@ app.put('/:id', zValidator('json', categoryUpdateSchema), async (c) => {
 		return c.json(updated)
 	} catch (err: any) {
 		if (err.code === 'P2025') {
-			return c.json({ error: 'Category not found.' }, 404)
+			throw new HTTPException(404, { message: 'Account not found' })
 		}
-		console.error(err)
-		return c.json({ error: 'Failed to update category.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
@@ -77,10 +74,9 @@ app.delete('/:id', async (c) => {
 		return c.json({ message: 'Category deleted.' })
 	} catch (err: any) {
 		if (err.code === 'P2025') {
-			return c.json({ error: 'Category not found.' }, 404)
+			throw new HTTPException(404, { message: 'Account not found' })
 		}
-		console.error(err)
-		return c.json({ error: 'Failed to delete category.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 

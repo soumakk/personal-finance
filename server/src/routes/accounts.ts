@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { PrismaClient } from '@prisma/client'
 import { accountSchema, accountUpdateSchema } from '../schemas/account'
+import { HTTPException } from 'hono/http-exception'
 
 const prisma = new PrismaClient()
 const accounts = new Hono()
@@ -19,8 +20,7 @@ accounts.post('/', zValidator('json', accountSchema), async (c) => {
 		const account = await prisma.account.create({ data })
 		return c.json(account, 201)
 	} catch (err) {
-		console.error(err)
-		return c.json({ error: 'Failed to create account.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
@@ -35,8 +35,7 @@ accounts.get('/', async (c) => {
 		})
 		return c.json(all)
 	} catch (err) {
-		console.error(err)
-		return c.json({ error: 'Failed to fetch accounts.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
@@ -48,8 +47,7 @@ accounts.get('/:id', async (c) => {
 		if (!account) return c.json({ error: 'Account not found.' }, 404)
 		return c.json(account)
 	} catch (err) {
-		console.error(err)
-		return c.json({ error: 'Failed to fetch account.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
@@ -62,10 +60,9 @@ accounts.put('/:id', zValidator('json', accountUpdateSchema), async (c) => {
 		return c.json(updated)
 	} catch (err: any) {
 		if (err.code === 'P2025') {
-			return c.json({ error: 'Account not found.' }, 404)
+			throw new HTTPException(404, { message: 'Account not found' })
 		}
-		console.error(err)
-		return c.json({ error: 'Failed to update account.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
@@ -77,10 +74,10 @@ accounts.delete('/:id', async (c) => {
 		return c.json({ message: 'Account deleted.' })
 	} catch (err: any) {
 		if (err.code === 'P2025') {
-			return c.json({ error: 'Account not found.' }, 404)
+			throw new HTTPException(404, { message: 'Account not found' })
 		}
 		console.error(err)
-		return c.json({ error: 'Failed to delete account.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 

@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import categories from './routes/categories'
 import accounts from './routes/accounts'
+import auth from './routes/auth'
 import transactions from './routes/transactions'
 import { logger } from 'hono/logger'
 import { cors } from 'hono/cors'
@@ -30,8 +31,12 @@ app.use(
 	})
 )
 
-app.route('/categories', categories)
-app.route('/accounts', accounts)
-app.route('/transactions', transactions)
+app.route('/api', auth)
+app.route('/api/categories', categories)
+app.route('/api/accounts', accounts)
+app.route('/api/transactions', transactions)
 
-export default app
+export default {
+	port: process.env.PORT || 5000,
+	fetch: app.fetch,
+}

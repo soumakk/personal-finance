@@ -3,6 +3,7 @@ import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { PrismaClient } from '@prisma/client'
 import { transactionSchema, transactionUpdateSchema } from '../schemas/transaction'
+import { HTTPException } from 'hono/http-exception'
 
 const prisma = new PrismaClient()
 const app = new Hono()
@@ -14,8 +15,7 @@ app.post('/', zValidator('json', transactionSchema), async (c) => {
 		const transaction = await prisma.transaction.create({ data })
 		return c.json(transaction, 201)
 	} catch (err) {
-		console.error(err)
-		return c.json({ error: 'Failed to create transaction.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
@@ -34,8 +34,7 @@ app.get('/', async (c) => {
 		})
 		return c.json(all)
 	} catch (err) {
-		console.error(err)
-		return c.json({ error: 'Failed to fetch transactions.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
@@ -47,8 +46,7 @@ app.get('/:id', async (c) => {
 		if (!transaction) return c.json({ error: 'Transaction not found.' }, 404)
 		return c.json(transaction)
 	} catch (err) {
-		console.error(err)
-		return c.json({ error: 'Failed to fetch transaction.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
@@ -61,10 +59,9 @@ app.put('/:id', zValidator('json', transactionUpdateSchema), async (c) => {
 		return c.json(updated)
 	} catch (err: any) {
 		if (err.code === 'P2025') {
-			return c.json({ error: 'Transaction not found.' }, 404)
+			throw new HTTPException(404, { message: 'Account not found' })
 		}
-		console.error(err)
-		return c.json({ error: 'Failed to update transaction.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
@@ -76,10 +73,9 @@ app.delete('/:id', async (c) => {
 		return c.json({ message: 'Transaction deleted.' })
 	} catch (err: any) {
 		if (err.code === 'P2025') {
-			return c.json({ error: 'Transaction not found.' }, 404)
+			throw new HTTPException(404, { message: 'Account not found' })
 		}
-		console.error(err)
-		return c.json({ error: 'Failed to delete transaction.' }, 500)
+		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
 
