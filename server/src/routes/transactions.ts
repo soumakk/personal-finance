@@ -31,6 +31,10 @@ app.get('/', async (c) => {
 		const all = await prisma.transaction.findMany({
 			where,
 			orderBy: { date: 'desc' },
+			include: {
+				account: true,
+				category: true,
+			},
 		})
 		return c.json(all)
 	} catch (err) {

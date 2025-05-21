@@ -1,16 +1,16 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import { auth } from '@/lib/firebase'
+import { fetchUser, signupUser } from '@/services/user.api'
+import type { User } from '@/types/user.types'
 import {
-	onAuthStateChanged,
 	createUserWithEmailAndPassword,
-	signInWithEmailAndPassword,
-	signOut,
 	GoogleAuthProvider,
+	onAuthStateChanged,
+	signInWithEmailAndPassword,
 	signInWithPopup,
-	type User,
+	signOut,
 	type UserCredential,
 } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
-import { signupUser } from '@/services/user'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 
 type AuthContextType = {
 	currentUser: User | null
@@ -52,8 +52,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
-			setCurrentUser(user)
-			setLoading(false)
+			fetchUser().then((user) => {
+				setCurrentUser(user)
+				setLoading(false)
+			})
 		})
 
 		return unsubscribe

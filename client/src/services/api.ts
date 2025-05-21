@@ -1,13 +1,8 @@
-// src/services/api.ts
-
 import { auth } from '@/lib/firebase'
 
 export const API_URL = `${import.meta.env.VITE_SERVER_URL}/api`
 
-/**
- * Helper function to get auth token and make authenticated requests
- */
-async function authFetch(url: string, options: RequestInit = {}) {
+export async function authFetch<T>(url: string, options: RequestInit = {}) {
 	const user = auth.currentUser
 
 	if (!user) {
@@ -30,10 +25,6 @@ async function authFetch(url: string, options: RequestInit = {}) {
 			const errorData = await response.json().catch(() => null)
 			throw new Error(errorData?.error || `Request failed with status ${response.status}`)
 		}
-		return response.json()
+		return response.json() as T
 	})
-}
-
-export const UserApi = {
-	getProfile: () => authFetch('/user-profile'),
 }

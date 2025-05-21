@@ -23,14 +23,12 @@ app.get('/user-profile', authMiddleware, async (c) => {
 
 	try {
 		const userRecord = await auth.getUser(uid)
-		return c.json({
-			displayName: userRecord.displayName,
-			email: userRecord.email,
-			emailVerified: userRecord.emailVerified,
-			photoURL: userRecord.photoURL,
-			creationTime: userRecord.metadata.creationTime,
-			lastSignInTime: userRecord.metadata.lastSignInTime,
+		const user = await prisma.user.findFirst({
+			where: {
+				uid,
+			},
 		})
+		return c.json(user)
 	} catch (error) {
 		throw new HTTPException(500, { message: 'Internal server error' })
 	}
