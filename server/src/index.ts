@@ -31,12 +31,15 @@ app.use(
 	})
 )
 
+app.get('/', (c) => {
+	return c.json({ msg: 'Welcome to the API for personal finance app' })
+})
 app.route('/api', auth)
 app.route('/api/categories', categories)
 app.route('/api/accounts', accounts)
 app.route('/api/transactions', transactions)
 
 export default {
-	port: process.env.PORT || 5000,
+	port: process.env.PORT || 8080,
 	fetch: app.fetch,
 }
