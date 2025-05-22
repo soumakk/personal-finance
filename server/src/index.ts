@@ -14,7 +14,7 @@ app.use('*', logger())
 app.use(
 	'*',
 	cors({
-		origin: ['http://localhost:5173'], // Your frontend URL
+		origin: [process.env.CLIENT_URL],
 		allowHeaders: ['Content-Type', 'Authorization'],
 		allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
 		credentials: true,
