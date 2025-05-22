@@ -22,7 +22,7 @@ export async function authFetch<T>(url: string, options: RequestInit = {}) {
 		headers,
 	}).then(async (response) => {
 		if (!response.ok) {
-			const errorData = await response.json().catch(() => null)
+			const errorData = await response.json()
 			throw new Error(errorData?.error || `Request failed with status ${response.status}`)
 		}
 		return response.json() as T
