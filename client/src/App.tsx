@@ -17,8 +17,8 @@ function App() {
 				</Route>
 
 				<Route element={<PrivateRoute />}>
-					<Route path="/" element={<Dashboard />} />
-					<Route path="/transactions" element={<Transactions />} />
+					<Route path="/" element={<Transactions />} />
+					{/* <Route path="/transactions" element={<Transactions />} /> */}
 				</Route>
 			</Routes>
 		</AuthProvider>

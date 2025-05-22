@@ -25,7 +25,7 @@ app.use(
 	'*',
 	rateLimiter({
 		windowMs: 15 * 60 * 1000, // 15 minutes // counter will reset after 15min
-		limit: 100, // Max 100 requests per window // 100 req per 15 min
+		limit: 1000, // Max 100 requests per window // 100 req per 15 min
 		keyGenerator: (c) => c.req.header('x-forwarded-for') || 'global',
 		message: 'Too many requests, please try again later.',
 	})

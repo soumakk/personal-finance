@@ -53,3 +53,9 @@ export enum TransactionType {
 	INCOME = 'INCOME',
 	EXPENSE = 'EXPENSE',
 }
+
+export interface ISummary {
+	totalBalance: number
+	totalExpense: number
+	totalIncome: number
+}

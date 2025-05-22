@@ -4,6 +4,7 @@ import { zValidator } from '@hono/zod-validator'
 import { PrismaClient } from '@prisma/client'
 import { transactionSchema, transactionUpdateSchema } from '../schemas/transaction'
 import { HTTPException } from 'hono/http-exception'
+import { authMiddleware } from '../middleware/auth'
 
 const prisma = new PrismaClient()
 const app = new Hono()
@@ -19,8 +20,36 @@ app.post('/', zValidator('json', transactionSchema), async (c) => {
 	}
 })
 
+app.get('/summary', async (c) => {
+	try {
+		const allIncomeBalance = await prisma.transaction.aggregate({
+			_sum: { amount: true },
+			where: { type: 'INCOME' },
+		})
+		const allExpenseBalance = await prisma.transaction.aggregate({
+			_sum: { amount: true },
+			where: { type: 'EXPENSE' },
+		})
+		const allAccounts = await prisma.account.aggregate({
+			_sum: { balance: true },
+		})
+
+		const accountBalance = allAccounts._sum.balance ?? 0
+		const totalIncome = allIncomeBalance._sum.amount ?? 0
+		const totalExpense = allExpenseBalance._sum.amount ?? 0
+
+		return c.json({
+			totalBalance: accountBalance + totalIncome - totalExpense,
+			totalIncome,
+			totalExpense,
+		})
+	} catch (err) {
+		throw new HTTPException(500, { message: 'Internal server error' })
+	}
+})
+
 // READ ALL (optionally filter by userId, accountId, categoryId)
-app.get('/', async (c) => {
+app.get('/', authMiddleware, async (c) => {
 	try {
 		const { userId, accountId, categoryId } = c.req.query()
 		const where: any = {}

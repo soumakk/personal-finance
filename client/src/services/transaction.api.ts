@@ -1,4 +1,10 @@
-import type { Account, AddTransactionBody, Category, Transaction } from '@/types/transaction.types'
+import type {
+	Account,
+	AddTransactionBody,
+	Category,
+	ISummary as Summary,
+	Transaction,
+} from '@/types/transaction.types'
 import { authFetch } from './api'
 
 export function fetchAccounts() {
@@ -11,6 +17,10 @@ export function fetchCategories() {
 
 export function fetchTransactions() {
 	return authFetch<Transaction[]>('/transactions')
+}
+
+export function fetchSummary() {
+	return authFetch<Summary>('/transactions/summary')
 }
 
 export function addTransaction(body: AddTransactionBody) {

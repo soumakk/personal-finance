@@ -15,6 +15,7 @@ import { useAccounts, useCategories } from '@/services/queries'
 import { addTransaction } from '@/services/transaction.api'
 import { TransactionType } from '@/types/transaction.types'
 import { useForm } from '@tanstack/react-form'
+import { useQueryClient } from '@tanstack/react-query'
 
 const transactionTypeOptions = [
 	{
@@ -37,6 +38,7 @@ export default function AddTransactionDialog({
 	const { data: accounts } = useAccounts()
 	const { data: categories } = useCategories()
 	const { currentUser } = useAuth()
+	const queryClient = useQueryClient()
 
 	const form = useForm({
 		defaultValues: {
@@ -57,6 +59,7 @@ export default function AddTransactionDialog({
 				description: value.description,
 				userId: currentUser.id,
 			})
+			queryClient.invalidateQueries({ queryKey: ['transactions'] })
 			onClose()
 		},
 	})

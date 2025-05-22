@@ -14,14 +14,14 @@ export default function Header() {
 				</a>
 
 				<nav className="flex-1">
-					<ul className="flex items-center gap-4">
+					{/* <ul className="flex items-center gap-4">
 						<li>
 							<Link to="/">Dashboard</Link>
 						</li>
 						<li>
 							<Link to="/transactions">Transactions</Link>
 						</li>
-					</ul>
+					</ul> */}
 				</nav>
 
 				<div className="flex items-center gap-3">

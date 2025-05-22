@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { fetchAccounts, fetchCategories, fetchTransactions } from './transaction.api'
+import { fetchAccounts, fetchCategories, fetchSummary, fetchTransactions } from './transaction.api'
 
 export function useAccounts() {
 	return useQuery({
@@ -19,5 +19,12 @@ export function useTransactions() {
 	return useQuery({
 		queryKey: ['transactions'],
 		queryFn: fetchTransactions,
+	})
+}
+
+export function useSummary() {
+	return useQuery({
+		queryKey: ['summary'],
+		queryFn: fetchSummary,
 	})
 }

@@ -10,6 +10,7 @@ import {
 	signOut,
 	type UserCredential,
 } from 'firebase/auth'
+import { Loader } from 'lucide-react'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
 type AuthContextType = {
@@ -52,10 +53,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
-			fetchUser().then((user) => {
-				setCurrentUser(user)
-				setLoading(false)
-			})
+			fetchUser()
+				.then((user) => {
+					setCurrentUser(user)
+					setLoading(false)
+				})
+				.catch((err) => {
+					setLoading(false)
+					setCurrentUser(null)
+				})
 		})
 
 		return unsubscribe
@@ -70,5 +76,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 		logout,
 	}
 
-	return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>
+	return (
+		<AuthContext.Provider value={value}>
+			{loading ? (
+				<div className="h-dvh w-full grid place-content-center">
+					<Loader className="h-5 w-5 animate-spin" />
+				</div>
+			) : (
+				children
+			)}
+		</AuthContext.Provider>
+	)
 }
