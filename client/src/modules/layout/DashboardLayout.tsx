@@ -14,9 +14,9 @@ export default function DashboardLayout({
 		<div>
 			<Header />
 
-			<section className="max-w-5xl mx-auto px-3">
+			<section className="max-w-5xl mx-auto my-6 bg-card rounded-2xl p-8">
 				<div className="flex items-center justify-between">
-					<h2 className="text-3xl font-semibold">{title}</h2>
+					<h2 className="text-2xl font-semibold">{title}</h2>
 
 					{action}
 				</div>

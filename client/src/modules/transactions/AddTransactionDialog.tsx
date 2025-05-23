@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Select from '@/components/widgets/Select'
 import { useAuth } from '@/contexts/AuthContext'
+import { cn } from '@/lib/utils'
 import { useAccounts, useCategories } from '@/services/queries'
 import { addTransaction } from '@/services/transaction.api'
 import { TransactionType } from '@/types/transaction.types'
@@ -67,9 +68,9 @@ export default function AddTransactionDialog({
 	return (
 		<Dialog open={open} onOpenChange={onClose}>
 			<DialogContent>
-				<DialogHeader>
+				{/* <DialogHeader>
 					<DialogTitle>New Transaction</DialogTitle>
-				</DialogHeader>
+				</DialogHeader> */}
 
 				<form
 					onSubmit={(e) => {
@@ -82,14 +83,62 @@ export default function AddTransactionDialog({
 					<div className="grid gap-6">
 						<form.Field name="type">
 							{(field) => {
+								function toggleType() {
+									field.handleChange(
+										field.state.value === TransactionType.EXPENSE
+											? TransactionType.INCOME
+											: TransactionType.EXPENSE
+									)
+								}
+								return (
+									<div className="flex justify-center">
+										<div className="inline-flex items-center border rounded-full">
+											<button
+												className={cn(
+													'min-w-[40px] bg-muted h-11 px-10 rounded-full cursor-pointer',
+													{
+														'bg-primary text-primary-foreground':
+															field.state.value ===
+															TransactionType.EXPENSE,
+													}
+												)}
+												onClick={toggleType}
+												type="button"
+											>
+												Expense
+											</button>
+											<button
+												className={cn(
+													'min-w-[40px] bg-muted h-11 px-10 rounded-full cursor-pointer',
+													{
+														'bg-primary text-primary-foreground':
+															field.state.value ===
+															TransactionType.INCOME,
+													}
+												)}
+												onClick={toggleType}
+												type="button"
+											>
+												Income
+											</button>
+										</div>
+									</div>
+								)
+							}}
+						</form.Field>
+
+						<form.Field name="amount">
+							{(field) => {
 								return (
 									<div className="grid gap-2">
-										<Label htmlFor={field.name}>Transaction Type</Label>
-										<Select
-											options={transactionTypeOptions}
+										<Input
+											type="number"
 											id={field.name}
+											name={field.name}
 											value={field.state.value}
-											onChange={(date) => field.handleChange(date)}
+											onBlur={field.handleBlur}
+											onChange={(e) => field.handleChange(e.target.value)}
+											placeholder="Amount"
 										/>
 									</div>
 								)
@@ -128,24 +177,6 @@ export default function AddTransactionDialog({
 											id={field.name}
 											value={field.state.value}
 											onChange={(date) => field.handleChange(date)}
-										/>
-									</div>
-								)
-							}}
-						</form.Field>
-
-						<form.Field name="amount">
-							{(field) => {
-								return (
-									<div className="grid gap-2">
-										<Label htmlFor={field.name}>Amount</Label>
-										<Input
-											type="number"
-											id={field.name}
-											name={field.name}
-											value={field.state.value}
-											onBlur={field.handleBlur}
-											onChange={(e) => field.handleChange(e.target.value)}
 										/>
 									</div>
 								)

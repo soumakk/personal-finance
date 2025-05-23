@@ -66,29 +66,29 @@ export default function Transactions() {
 			</div>
 
 			<br />
-			<div className="rounded-md border">
+			<div className="">
 				<Table>
 					<TableHeader>
 						<TableRow>
-							<TableHead className="">Category</TableHead>
-							<TableHead>Date</TableHead>
+							<TableHead className="">Date</TableHead>
+							<TableHead>Category</TableHead>
+							<TableHead>Description</TableHead>
+							<TableHead>Amount</TableHead>
 							<TableHead>Type</TableHead>
-							<TableHead>Method</TableHead>
-							<TableHead className="text-right">Amount</TableHead>
+							<TableHead>Account</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
 						{transactions?.map((transaction) => (
 							<TableRow key={transaction.id}>
 								<TableCell className="font-medium">
-									{transaction.category.name}
-								</TableCell>
-								<TableCell>{transaction.type}</TableCell>
-								<TableCell>
 									{dayjs(transaction.date).format('DD/MM/YYYY')}
 								</TableCell>
+								<TableCell>{transaction.category.name}</TableCell>
+								<TableCell>{transaction.description}</TableCell>
+								<TableCell>{transaction.amount}</TableCell>
+								<TableCell>{transaction.type}</TableCell>
 								<TableCell>{transaction.account.name}</TableCell>
-								<TableCell className="text-right">{transaction.amount}</TableCell>
 							</TableRow>
 						))}
 					</TableBody>
