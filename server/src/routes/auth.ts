@@ -29,7 +29,11 @@ app.get('/user-profile', authMiddleware, async (c) => {
 			},
 		})
 		return c.json(user)
-	} catch (error) {
+	} catch (error: any) {
+		console.log(error)
+		if (error.code === 'P2021') {
+			throw new HTTPException(404, { message: 'Account not found' })
+		}
 		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
@@ -46,6 +50,7 @@ app.post('/create-user', zValidator('json', signupUserSchema), async (c) => {
 		})
 		return c.json({ success: true })
 	} catch (error) {
+		console.log(error)
 		throw new HTTPException(500, { message: 'Internal server error' })
 	}
 })
