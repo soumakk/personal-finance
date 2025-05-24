@@ -2,8 +2,7 @@
 	"name": "server",
 	"scripts": {
 		"dev": "bun run --hot src/index.ts",
-		"start": "bun run src/index.ts",
-		"prestart": "bunx prisma generate"
+		"predev": "bunx prisma generate"
 	},
 	"dependencies": {
 		"@hono/zod-validator": "^0.5.0",
