@@ -14,7 +14,11 @@ app.use('*', logger())
 app.use(
 	'*',
 	cors({
-		origin: [process.env.CLIENT_URL],
+		origin: [
+			process.env.CLIENT_URL,
+			'https://simple-finance-app.netlify.app',
+			'http://localhost:5173',
+		],
 		allowHeaders: ['Content-Type', 'Authorization'],
 		allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
 		credentials: true,
