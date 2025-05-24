@@ -35,7 +35,7 @@ export default function Transactions() {
 			<div className="grid grid-cols-3 gap-4">
 				<div className="border rounded-xl p-7 relative">
 					<p className="text-lg text-muted-foreground mb-3">Total Balance</p>
-					<h3 className="text-4xl font-bold">
+					<h3 className="text-4xl font-bold text-primary">
 						{formatPrice(summary?.totalBalance ?? 0)}
 					</h3>
 
@@ -46,7 +46,9 @@ export default function Transactions() {
 
 				<div className="border rounded-xl p-7 relative">
 					<p className="text-lg text-muted-foreground mb-3">Income</p>
-					<h3 className="text-4xl font-bold">{formatPrice(summary?.totalIncome ?? 0)}</h3>
+					<h3 className="text-4xl font-bold text-green-500">
+						{formatPrice(summary?.totalIncome ?? 0)}
+					</h3>
 
 					<figure className="absolute top-4 right-4">
 						<img src={incomeIcon} alt="money" />
@@ -55,7 +57,7 @@ export default function Transactions() {
 
 				<div className="border rounded-xl p-7 relative">
 					<p className="text-lg text-muted-foreground mb-3">Expense</p>
-					<h3 className="text-4xl font-bold">
+					<h3 className="text-4xl font-bold text-red-500">
 						{formatPrice(summary?.totalExpense ?? 0)}
 					</h3>
 

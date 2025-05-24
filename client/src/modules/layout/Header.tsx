@@ -3,6 +3,14 @@ import reactLogo from '../../assets/logo.svg'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/AuthContext'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { LogOut, User } from 'lucide-react'
 
 export default function Header() {
 	const { logout } = useAuth()
@@ -25,12 +33,23 @@ export default function Header() {
 				</nav>
 
 				<div className="flex items-center gap-3">
-					{/* <Button variant="ghost" onClick={logout}>
-						Logout
-					</Button> */}
-					<Avatar>
-						<AvatarFallback>S</AvatarFallback>
-					</Avatar>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Avatar className="cursor-pointer select-none">
+								<AvatarFallback>S</AvatarFallback>
+							</Avatar>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent>
+							<DropdownMenuItem>
+								<User />
+								View profile
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={logout}>
+								<LogOut />
+								Log out
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
 				</div>
 			</div>
 		</header>

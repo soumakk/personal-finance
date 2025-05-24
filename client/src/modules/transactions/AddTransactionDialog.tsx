@@ -219,10 +219,18 @@ export default function AddTransactionDialog({
 					</div>
 
 					<DialogFooter>
-						<Button type="button" variant="secondary" onClick={onClose}>
+						<Button
+							size="lg"
+							className="flex-1 w-full"
+							type="button"
+							variant="outline"
+							onClick={onClose}
+						>
 							Cancel
 						</Button>
-						<Button type="submit">Confirm</Button>
+						<Button size="lg" className="flex-1 w-full" type="submit">
+							Confirm
+						</Button>
 					</DialogFooter>
 				</form>
 			</DialogContent>

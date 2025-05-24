@@ -105,7 +105,7 @@ export function SignupForm() {
 							}}
 						</form.Field>
 					</div>
-					<Button type="submit" className="w-full">
+					<Button size="lg" type="submit" className="w-full">
 						Login
 					</Button>
 				</div>
