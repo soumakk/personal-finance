@@ -17,7 +17,7 @@ app.use(
 		origin: [
 			process.env.CLIENT_URL,
 			'https://simple-finance-app.netlify.app',
-			'http://localhost:5173',
+			'http://localhost:3000',
 		],
 		allowHeaders: ['Content-Type', 'Authorization'],
 		allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -44,6 +44,6 @@ app.route('/api/accounts', accounts)
 app.route('/api/transactions', transactions)
 
 export default {
-	port: process.env.PORT || 8080,
+	port: process.env.PORT || 5000,
 	fetch: app.fetch,
 }
