@@ -6,10 +6,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
+import type { ReactNode } from 'react'
 
 export interface ISelectOption {
 	label: string
 	value: string
+	icon?: ReactNode
 }
 
 interface ISelect {
@@ -33,7 +35,8 @@ export default function Select(props: ISelect) {
 				<SelectGroup>
 					{options?.map((opt) => (
 						<SelectItem key={opt.value} value={opt.value}>
-							{opt.label}
+							<span>{opt?.icon}</span>
+							<span>{opt.label}</span>
 						</SelectItem>
 					))}
 				</SelectGroup>

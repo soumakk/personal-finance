@@ -16,10 +16,11 @@ import expenseIcon from '../../assets/expense.svg'
 import incomeIcon from '../../assets/income.svg'
 import moneyIcon from '../../assets/money.svg'
 import { formatPrice } from '@/lib/utils'
+import { Loader } from 'lucide-react'
 
 export default function Transactions() {
 	const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-	const { data: transactions, isLoading } = useTransactions()
+	const { data: transactions, isLoading: isTransactionsLoading } = useTransactions()
 	const { data: summary } = useSummary()
 	console.log(summary)
 
@@ -74,33 +75,46 @@ export default function Transactions() {
 						<TableRow>
 							<TableHead className="">Date</TableHead>
 							<TableHead>Category</TableHead>
-							<TableHead>Description</TableHead>
+							<TableHead>Notes</TableHead>
 							<TableHead>Amount</TableHead>
 							<TableHead>Type</TableHead>
 							<TableHead>Account</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{transactions?.map((transaction) => (
-							<TableRow key={transaction.id}>
-								<TableCell className="font-medium">
-									{dayjs(transaction.date).format('DD/MM/YYYY')}
+						{transactions?.length === 0 ? (
+							<TableRow>
+								<TableCell
+									className="text-center py-20 pointer-events-none"
+									colSpan={6}
+								>
+									No transactions found
 								</TableCell>
-								<TableCell>{transaction.category.name}</TableCell>
-								<TableCell>{transaction.description}</TableCell>
-								<TableCell>{transaction.amount}</TableCell>
-								<TableCell>{transaction.type}</TableCell>
-								<TableCell>{transaction.account.name}</TableCell>
 							</TableRow>
-						))}
+						) : (
+							transactions?.map((transaction) => (
+								<TableRow key={transaction.id}>
+									<TableCell className="font-medium">
+										{dayjs(transaction.date).format('MMM DD, YYYY')}
+									</TableCell>
+									<TableCell>{transaction.category.name}</TableCell>
+									<TableCell>{transaction.description}</TableCell>
+									<TableCell>{formatPrice(transaction.amount)}</TableCell>
+									<TableCell>{transaction.type}</TableCell>
+									<TableCell>{transaction.account.name}</TableCell>
+								</TableRow>
+							))
+						)}
 					</TableBody>
 				</Table>
 			</div>
 
-			<AddTransactionDialog
-				open={isAddDialogOpen}
-				onClose={() => setIsAddDialogOpen(false)}
-			/>
+			{isAddDialogOpen && (
+				<AddTransactionDialog
+					open={isAddDialogOpen}
+					onClose={() => setIsAddDialogOpen(false)}
+				/>
+			)}
 		</DashboardLayout>
 	)
 }

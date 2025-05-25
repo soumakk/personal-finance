@@ -59,7 +59,7 @@ app.get('/', authMiddleware, async (c) => {
 
 		const all = await prisma.transaction.findMany({
 			where,
-			orderBy: { date: 'desc' },
+			orderBy: { createdAt: 'desc' },
 			include: {
 				account: true,
 				category: true,

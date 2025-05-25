@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import Select from '@/components/widgets/Select'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
@@ -17,17 +18,7 @@ import { addTransaction } from '@/services/transaction.api'
 import { TransactionType } from '@/types/transaction.types'
 import { useForm } from '@tanstack/react-form'
 import { useQueryClient } from '@tanstack/react-query'
-
-const transactionTypeOptions = [
-	{
-		label: 'Income',
-		value: TransactionType.INCOME,
-	},
-	{
-		label: 'Expense',
-		value: TransactionType.EXPENSE,
-	},
-]
+import dayjs from 'dayjs'
 
 export default function AddTransactionDialog({
 	open,
@@ -45,10 +36,10 @@ export default function AddTransactionDialog({
 		defaultValues: {
 			amount: '',
 			description: '',
-			date: '',
-			type: 'INCOME',
-			accountId: '',
-			categoryId: '',
+			date: dayjs().toISOString(),
+			type: TransactionType.EXPENSE,
+			accountId: accounts?.[0]?.id,
+			categoryId: categories?.[0]?.id,
 		},
 		onSubmit: async ({ value }) => {
 			await addTransaction({
@@ -61,6 +52,7 @@ export default function AddTransactionDialog({
 				userId: currentUser.id,
 			})
 			queryClient.invalidateQueries({ queryKey: ['transactions'] })
+			queryClient.invalidateQueries({ queryKey: ['summary'] })
 			onClose()
 		},
 	})
@@ -95,7 +87,7 @@ export default function AddTransactionDialog({
 										<div className="inline-flex items-center border rounded-full">
 											<button
 												className={cn(
-													'min-w-[40px] bg-muted h-11 px-10 rounded-full cursor-pointer',
+													'min-w-[40px] h-11 px-10 rounded-full cursor-pointer',
 													{
 														'bg-primary text-primary-foreground':
 															field.state.value ===
@@ -109,7 +101,7 @@ export default function AddTransactionDialog({
 											</button>
 											<button
 												className={cn(
-													'min-w-[40px] bg-muted h-11 px-10 rounded-full cursor-pointer',
+													'min-w-[40px] h-11 px-10 rounded-full cursor-pointer',
 													{
 														'bg-primary text-primary-foreground':
 															field.state.value ===
@@ -127,85 +119,93 @@ export default function AddTransactionDialog({
 							}}
 						</form.Field>
 
-						<form.Field name="amount">
-							{(field) => {
-								return (
-									<div className="grid gap-2">
-										<Input
-											type="number"
-											id={field.name}
-											name={field.name}
-											value={field.state.value}
-											onBlur={field.handleBlur}
-											onChange={(e) => field.handleChange(e.target.value)}
-											placeholder="Amount"
-										/>
-									</div>
-								)
-							}}
-						</form.Field>
+						<div className="grid grid-cols-2 gap-5">
+							<form.Field name="amount">
+								{(field) => {
+									return (
+										<div className="grid gap-2">
+											<Label htmlFor={field.name}>Amount</Label>
+											<Input
+												autoFocus
+												type="number"
+												id={field.name}
+												name={field.name}
+												value={field.state.value}
+												onBlur={field.handleBlur}
+												onChange={(e) => field.handleChange(e.target.value)}
+												placeholder="Amount"
+											/>
+										</div>
+									)
+								}}
+							</form.Field>
+							<form.Field name="date">
+								{(field) => {
+									return (
+										<div className="grid gap-2">
+											<Label htmlFor={field.name}>Transaction Date</Label>
+											<DatePicker
+												id={field.name}
+												value={field.state.value}
+												onBlur={field.handleBlur}
+												onChange={(date) => field.handleChange(date)}
+											/>
+										</div>
+									)
+								}}
+							</form.Field>
+						</div>
 
-						<form.Field name="accountId">
-							{(field) => {
-								return (
-									<div className="grid gap-2">
-										<Label htmlFor={field.name}>Account</Label>
-										<Select
-											options={accounts?.map((acc) => ({
-												label: acc.name,
-												value: acc.id,
-											}))}
-											id={field.name}
-											value={field.state.value}
-											onChange={(date) => field.handleChange(date)}
-										/>
-									</div>
-								)
-							}}
-						</form.Field>
+						<div className="grid grid-cols-2 gap-5">
+							<form.Field name="accountId">
+								{(field) => {
+									return (
+										<div className="grid gap-2">
+											<Label htmlFor={field.name}>Account</Label>
+											<Select
+												options={accounts?.map((acc) => ({
+													label: acc.name,
+													value: acc.id,
+												}))}
+												id={field.name}
+												value={field.state.value}
+												onChange={(date) => field.handleChange(date)}
+											/>
+										</div>
+									)
+								}}
+							</form.Field>
 
-						<form.Field name="categoryId">
-							{(field) => {
-								return (
-									<div className="grid gap-2">
-										<Label htmlFor={field.name}>Category</Label>
-										<Select
-											options={categories?.map((acc) => ({
-												label: acc.name,
-												value: acc.id,
-											}))}
-											id={field.name}
-											value={field.state.value}
-											onChange={(date) => field.handleChange(date)}
-										/>
-									</div>
-								)
-							}}
-						</form.Field>
-
-						<form.Field name="date">
-							{(field) => {
-								return (
-									<div className="grid gap-2">
-										<Label htmlFor={field.name}>Transaction Date</Label>
-										<DatePicker
-											id={field.name}
-											value={field.state.value}
-											onBlur={field.handleBlur}
-											onChange={(date) => field.handleChange(date)}
-										/>
-									</div>
-								)
-							}}
-						</form.Field>
+							<form.Field name="categoryId">
+								{(field) => {
+									return (
+										<div className="grid gap-2">
+											<Label htmlFor={field.name}>Category</Label>
+											<Select
+												options={categories
+													// ?.filter((cat) => transactionType === cat.type)
+													?.map((cat) => ({
+														label: cat.name,
+														value: cat.id,
+														icon: cat.icon,
+													}))}
+												id={field.name}
+												value={field.state.value}
+												onChange={(date) => field.handleChange(date)}
+											/>
+										</div>
+									)
+								}}
+							</form.Field>
+						</div>
 
 						<form.Field name="description">
 							{(field) => {
 								return (
 									<div className="grid gap-2">
-										<Label htmlFor={field.name}>Description</Label>
-										<Input
-											type="text"
+										<Label htmlFor={field.name}>Notes</Label>
+										<Textarea
+											rows={3}
 											id={field.name}
 											name={field.name}
 											value={field.state.value}
