@@ -6,7 +6,7 @@ ENV PORT=5000
 COPY package.json bun.lock ./
 COPY src ./src
 COPY prisma ./prisma
-COPY .env ./
+# COPY .env ./
 
 RUN bun install --frozen-lockfile 
 RUN bun run build 
