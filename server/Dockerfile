@@ -1,12 +1,19 @@
 FROM oven/bun:latest
 
+ARG DATABASE_URL
+ARG FIREBASE_SERVICE_ACCOUNT
+ARG CLIENT_URL
+
+ENV DATABASE_URL=${DATABASE_URL}
+ENV FIREBASE_SERVICE_ACCOUNT=${FIREBASE_SERVICE_ACCOUNT}
+ENV CLIENT_URL=${CLIENT_URL}
+
 WORKDIR /app 
 ENV PORT=5000
 
 COPY package.json bun.lock ./
 COPY src ./src
 COPY prisma ./prisma
-# COPY .env ./
 
 RUN bun install --frozen-lockfile 
 RUN bun run build 
